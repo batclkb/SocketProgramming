@@ -18,13 +18,13 @@
 #define num_col 8
 
 using namespace std;
-/*const int ROWS = 3; // Örnek: 3 satır
-const int COLS = 4; // Örnek: 4 sütun
+/*const int ROWS = 3; // Ã–rnek: 3 satÃ½r
+const int COLS = 4; // Ã–rnek: 4 sÃ¼tun
 
-// Veriyi ve parite bitlerini içeren iki boyutlu matris
+// Veriyi ve parite bitlerini iÃ§eren iki boyutlu matris
 vector<vector<int>> matrix(ROWS, vector<int>(COLS + 1, 0));
 
-// Veriyi matrise yerleştirme
+// Veriyi matrise yerleÅŸtirme
 void fillMatrix(const string &data) {
     int dataIndex = 0;
     for (int i = 0; i < ROWS; i++) {
@@ -53,7 +53,7 @@ void calculateParityBits() {
     }
 }
 
-// Hata kontrolü yapma
+// Hata kontrolÃ¼ yapma
 bool checkParityBits() {
     for (int i = 0; i < ROWS; i++) {
         int rowParity = 0;
@@ -78,7 +78,7 @@ bool checkParityBits() {
     return true; // Hata yok
 }
 
-// Matrisi ekrana yazdırma
+// Matrisi ekrana yazdÃ½rma
 void printMatrix() {
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS + 1; j++) {
@@ -96,25 +96,25 @@ struct Terminal
     thread th;
 };
 
-// Aktif istemci terminal listesi ve renkler için değişkenler
+// Aktif istemci terminal listesi ve renkler iÃ§in deÄŸiÅŸkenler
 vector<Terminal> clients;
-string def_col = "\033[0m"; // Varsayılan rengi sıfırla
+string def_col = "\033[0m"; // VarsayÄ±lan rengi sÄ±fÄ±rla
 string colors[] = {"\033[31m", "\033[32m", "\033[33m", "\033[34m", "\033[35m", "\033[36m"};
 int seed = 0; 
-mutex mtx_cout, clients_mtx; // Konsol çıktısı ve istemci listesi için mutexler
+mutex mtx_cout, clients_mtx; // Konsol Ã§Ä±ktÄ±sÄ± ve istemci listesi iÃ§in mutexler
 
 
 string color(int code);
 void set_name(int id, const char name[]);
 
-// Konsola çıktı yazarken thread güvenliği sağlayan fonksiyon
+// Konsola Ã§Ä±ktÄ± yazarken thread gÃ¼venliÄŸi saÄŸlayan fonksiyon
 void shared_print(const string &str, bool endLine = true);
 
-// Mesajı tüm istemcilere ileten fonksiyonlar
+// MesajÄ± tÃ¼m istemcilere ileten fonksiyonlar
 int broadcast_message(const string &message, int sender_id);
 int broadcast_message(int num, int sender_id);
 
-// Bağlantıyı sonlandıran fonksiyonlar
+// BaÄŸlantÄ±yÄ± sonlandÄ±ran fonksiyonlar
 void end_connection(int id);
 void handle_client(int client_socket, int id);
 
@@ -122,28 +122,28 @@ int main()
 {
     /*string inputData;
 
-    // Veriyi kullanıcıdan al
+    // Veriyi kullanÄ±cÄ±dan al
     cout << "Enter binary data (length should be " << ROWS * COLS << "): ";
     cin >> inputData;
 
-    // Veriyi matrise yerleştirme
+    // Veriyi matrise yerleÅŸtirme
     fillMatrix(inputData);
 
     // Parite bitlerini hesaplama
     calculateParityBits();
 
-    // Matrisi ekrana yazdırma
+    // Matrisi ekrana yazdÄ±rma
     cout << "Matrix with parity bits:" << endl;
     printMatrix();
 
-    // Hata kontrolü yapma
+    // Hata kontrolÃ¼ yapma
     if (checkParityBits()) {
         cout << "No error detected. Data is correct." << endl;
     } else {
         cout << "Error detected. Data may be corrupted." << endl;
     }
     */
-    // Sunucu soketini oluşturma
+    // Sunucu soketini oluÅŸturma
     int server_socket;
     if ((server_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
     {
@@ -151,14 +151,14 @@ int main()
         exit(-1);
     }
 
-    // Sunucu adresi ayarları
+    // Sunucu adresi ayarlarÄ±
     struct sockaddr_in server;
     server.sin_family = AF_INET;
     server.sin_port = htons(10000);
     server.sin_addr.s_addr = INADDR_ANY;
     bzero(&server.sin_zero, 0);
 
-    // Sunucu soketine bağlama
+    // Sunucu soketine baÄŸlama
     if (bind(server_socket, (struct sockaddr *)&server, sizeof(struct sockaddr_in)) == -1)
     {
         perror("bind error: ");
@@ -176,27 +176,27 @@ int main()
     int client_socket;
     unsigned int len = sizeof(sockaddr_in);
 
-    // Sunucu başlatma ve istemci bağlantılarını kabul etme
+    // Sunucu baÅŸlatma ve istemci baÄŸlantÄ±larÄ±nÄ± kabul etme
     cout << colors[num_col - 1] << "\n\t  ====== WELCOME TO THE LOBBY ======   " << endl
          << def_col;
 
     while (1)
     {
-        // Yeni bir istemci bağlantısını kabul etme
+        // Yeni bir istemci baÄŸlantÄ±sÄ±nÄ± kabul etme
         if ((client_socket = accept(server_socket, (struct sockaddr *)&client, &len)) == -1)
         {
             perror("accept error: ");
             exit(-1);
         }
 
-        // Her istemci için bir ID oluşturarak thread oluşturma ve listeye ekleme
+        // Her istemci iÃ§in bir ID oluÃ¾turarak thread oluÃ¾turma ve listeye ekleme
         seed++;
         thread t(handle_client, client_socket, seed);
         lock_guard<mutex> guard(clients_mtx);
         clients.push_back({seed, "Anonymous", client_socket, move(t)});
     }
 
-    // Tüm thread'leri birleştirme ve sunucu soketini kapatma
+    // TÃ¼m thread'leri birleÅŸtirme ve sunucu soketini kapatma
     for (auto &client : clients)
     {
         if (client.th.joinable())
@@ -213,7 +213,7 @@ string color(int code)
     return colors[code % num_col];
 }
 
-// İstemci ismini ayarlayan fonksiyon
+// Ä°stemci ismini ayarlayan fonksiyon
 void set_name(int id, const char name[])
 {
     for (auto &client : clients)
@@ -225,7 +225,7 @@ void set_name(int id, const char name[])
     }
 }
 
-// Thread güvenliği sağlayan konsol çıktısı yazdıran fonksiyon
+// Thread gÃ¼venliÄŸi saÄŸlayan konsol Ã§Ä±ktÄ±sÄ± yazdÄ±ran fonksiyon
 void shared_print(const string &str, bool endLine)
 {
     lock_guard<mutex> guard(mtx_cout);
@@ -234,7 +234,7 @@ void shared_print(const string &str, bool endLine)
         cout << endl;
 }
 
-// Mesajı tüm istemcilere ileten fonksiyonlar
+// MesajÄ± tÃ¼m istemcilere ileten fonksiyonlar
 int broadcast_message(const string &message, int sender_id)
 {
     char temp[max_lenght];
@@ -261,7 +261,7 @@ int broadcast_message(int num, int sender_id)
     return 0;
 }
 
-// İstemci bağlantısını sonlandıran fonksiyon
+// Ä°stemci baÄŸlantÄ±sÄ±nÄ± sonlandÄ±ran fonksiyon
 void end_connection(int id)
 {
     auto it = remove_if(clients.begin(), clients.end(),
@@ -276,7 +276,7 @@ void end_connection(int id)
     }
 }
 
-// İstemciye gelen mesajları işleyen fonksiyon
+// Ä°stemciye gelen mesajlarÄ± iÅŸleyen fonksiyon
 void handle_client(int client_socket, int id)
 {
     char name[max_lenght], str[max_lenght];
@@ -287,24 +287,24 @@ void handle_client(int client_socket, int id)
         return;
     }
 
-    // İstemci ismini ayarlama
+    // Ä°stemci ismini ayarlama
     set_name(id, name);
 
-    // Hoş geldin mesajını yayınlama
+    // HoÅŸ geldin mesajÄ±nÄ± yayÄ±nlama
     string welcome_message = name + string(" has joined");
     broadcast_message("#NULL", id);
     broadcast_message(id, id);
     broadcast_message(welcome_message, id);
     shared_print(color(id) + welcome_message + def_col);
 
-    // İstemci mesajlarını alıp yayınlama döngüsü
+    // Ä°stemci mesajlarÄ±nÄ± alÄ±p yayÄ±nlama dÃ¶ngÃ¼sÃ¼
     while (true)
     {
         bytes_received = recv(client_socket, str, sizeof(str), 0);
         if (bytes_received <= 0)
             return;
 
-        // İstemci " #exit" gönderdiğinde bağlantıyı sonlandırma
+        // Ä°stemci " #exit" gÃ¶nderdiÄŸinde baÄŸlantÄ±yÄ± sonlandÄ±rma
         if (strcmp(str, "#exit") == 0)
         {
             string message = name + string(" has left");
@@ -316,7 +316,7 @@ void handle_client(int client_socket, int id)
             return;
         }
 
-        // İstemciden gelen mesajı tüm istemcilere ileterek konsola yazdırma
+        // Ä°stemciden gelen mesajÄ± tÃ¼m istemcilere ileterek konsola yazdÄ±rma
         broadcast_message(name, id);
         broadcast_message(id, id);
         broadcast_message(str, id);
