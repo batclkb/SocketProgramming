@@ -16,13 +16,13 @@
 
 using namespace std;
 /*
-const int ROWS = 3; // Örnek: 3 satır
-const int COLS = 4; // Örnek: 4 sütun
+const int ROWS = 3; // Ã–rnek: 3 satÃ½r
+const int COLS = 4; // Ã–rnek: 4 sÃ¼tun
 
-// Veriyi ve parite bitlerini içeren iki boyutlu matris
+// Veriyi ve parite bitlerini iÃ§eren iki boyutlu matris
 vector<vector<int>> matrix(ROWS, vector<int>(COLS + 1, 0));
 
-// Veriyi matrise yerleştirme
+// Veriyi matrise yerleÅŸtirme
 void fillMatrix(const string &data) {
     int dataIndex = 0;
     for (int i = 0; i < ROWS; i++) {
@@ -51,7 +51,7 @@ void calculateParityBits() {
     }
 }
 
-// Hata kontrolü yapma
+// Hata kontrolÃ¼ yapma
 bool checkParityBits() {
     for (int i = 0; i < ROWS; i++) {
         int rowParity = 0;
@@ -76,7 +76,7 @@ bool checkParityBits() {
     return true; // Hata yok
 }
 
-// Matrisi ekrana yazdırma
+// Matrisi ekrana yazdÄ±rma
 void printMatrix() {
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS + 1; j++) {
@@ -87,20 +87,20 @@ void printMatrix() {
 }
 */
 
-// Çıkış bayrağı ve thread'ler için değişkenler
+// Ã‡Ä±kÄ±ÅŸ bayraÄŸÄ± ve thread'ler iÃ§in deÄŸiÅŸkenler
 bool exit_flag = false;
 thread t_send, t_recv;
 int client_socket;
-string def_col = "\033[0m"; // Varsayılan renk
+string def_col = "\033[0m"; // VarsayÄ±lan renk
 string colors[] = {"\033[31m", "\033[32m", "\033[33m", "\033[34m", "\033[35m", "\033[36m"}; // Renklerin listesi
 
-// Ctrl+C sinyali için işleyici
+// Ctrl+C sinyali iÃ§in iÅŸleyici
 void catch_ctrl_c(int signal);
 
-// Renk döndüren fonksiyon
+// Renk dÃ¶ndÃ¼ren fonksiyon
 string color(int code);
 
-// Mesaj gönderen fonksiyon
+// Mesaj gÃ¶nderen fonksiyon
 void send_message(int client_socket);
 
 // Mesaj alan fonksiyon
@@ -110,28 +110,28 @@ int main()
 {
     /* string inputData;
 
-    // Veriyi kullanıcıdan al
+    // Veriyi kullanÄ±cÄ±dan al
     cout << "Enter binary data (length should be " << ROWS * COLS << "): ";
     cin >> inputData;
 
-    // Veriyi matrise yerleştirme
+    // Veriyi matrise yerleÅŸtirme
     fillMatrix(inputData);
 
     // Parite bitlerini hesaplama
     calculateParityBits();
 
-    // Matrisi ekrana yazdırma
+    // Matrisi ekrana yazdÄ±rma
     cout << "Matrix with parity bits:" << endl;
     printMatrix();
 
-    // Hata kontrolü yapma
+    // Hata kontrolÃ¼ yapma
     if (checkParityBits()) {
         cout << "No error detected. Data is correct." << endl;
     } else {
         cout << "Error detected. Data may be corrupted." << endl;
     }
 */
-    // Soket oluşturma
+    // Soket oluÅŸturma
     if ((client_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
     {
         perror("socket: ");
@@ -141,19 +141,19 @@ int main()
     // Sunucu bilgileri
     struct sockaddr_in client;
     client.sin_family = AF_INET;
-    client.sin_port = htons(10000); // Sunucunun port numarası
+    client.sin_port = htons(10000); // Sunucunun port numarasÃ½
     client.sin_addr.s_addr = INADDR_ANY;
-    //client.sin_addr.s_addr=inet_addr("127.0.0.1"); // Sunucunun IP adresini sağlayın
+    //client.sin_addr.s_addr=inet_addr("127.0.0.1"); // Sunucunun IP adresini saÄŸlayÄ±n
     bzero(&client.sin_zero, 0);
 
-    // Sunucuya bağlanma
+    // Sunucuya baÄŸlanma
     if ((connect(client_socket, (struct sockaddr *)&client, sizeof(struct sockaddr_in))) == -1)
     {
         perror("connect: ");
         exit(-1);
     }
 
-    // Ctrl+C sinyali işleyiciyi ayarlama
+    // Ctrl+C sinyali iÅŸleyiciyi ayarlama
     signal(SIGINT, catch_ctrl_c);
 
     char name[max_lenght];
@@ -164,14 +164,14 @@ int main()
     cout << colors[num_col - 1] << "\n\t  ====== Welcome to the chat-room ======   " << endl
          << def_col;
 
-    // Mesaj gönderme ve alma işlemleri için thread'leri başlatma
+    // Mesaj gÃ¶nderme ve alma iÅŸlemleri iÃ§in thread'leri baÅŸlatma
     thread t1(send_message, client_socket);
     thread t2(recv_message, client_socket);
 
     t_send = move(t1);
     t_recv = move(t2);
 
-    // Thread'leri birleştirme
+    // Thread'leri birleÅŸtirme
     if (t_send.joinable())
         t_send.join();
     if (t_recv.joinable())
@@ -182,7 +182,7 @@ int main()
     return 0;
 }
 
-// Ctrl+C sinyali işleyici
+// Ctrl+C sinyali iÅŸleyici
 void catch_ctrl_c(int signal)
 {
     char str[max_lenght] = "#exit";
@@ -194,18 +194,18 @@ void catch_ctrl_c(int signal)
     exit(signal);
 }
 
-// Renk döndüren fonksiyon
+// Renk dÃ¶ndÃ¼ren fonksiyon
 string color(int code)
 {
     return colors[code % num_col];
 }
 
-// Mesaj gönderme fonksiyonu
+// Mesaj gÃ¶nderme fonksiyonu
 void send_message(int client_socket)
 {
     while (1)
     {
-        cout << colors[1] << "You : " << def_col; // Kendi mesajınızı yazmak için renk ayarı
+        cout << colors[1] << "You : " << def_col; // Kendi mesajÄ±nÄ±zÄ± yazmak iÃ§in renk ayarÄ±
         char str[max_lenght];
         cin.getline(str, max_lenght);
         send(client_socket, str, sizeof(str), 0);
@@ -232,12 +232,12 @@ void recv_message(int client_socket)
             continue;
         recv(client_socket, &color_code, sizeof(color_code), 0);
         recv(client_socket, str, sizeof(str), 0);
-        cout << "\033[K"; // Mesajı yazmadan önce satırı temizleme
+        cout << "\033[K"; // MesajÄ± yazmadan Ã¶nce satÄ±rÄ± temizleme
         if (strcmp(name, "#NULL") != 0)
-            cout << color(color_code) << name << " : " << def_col << str << endl; // Diğer kullanıcıların mesajlarını ekrana yazdırma
+            cout << color(color_code) << name << " : " << def_col << str << endl; // DiÄŸer kullanÄ±cÄ±larÄ±n mesajlarÄ±nÄ± ekrana yazdÄ±rma
         else
-            cout << color(color_code) << str << endl; // Sunucu mesajlarını ekrana yazdırma
-        cout << colors[1] << "You : " << def_col; // Kendi mesajınızı yazmak için renk ayarı
+            cout << color(color_code) << str << endl; // Sunucu mesajlarÄ±nÄ± ekrana yazdÃ½rma
+        cout << colors[1] << "You : " << def_col; // Kendi mesajÄ±nÄ±zÄ± yazmak iÃ§in renk ayarÄ±
         fflush(stdout);
     }
 }
